@@ -1,0 +1,7 @@
+{
+  "name": "ng-supabase-template",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
