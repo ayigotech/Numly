@@ -1,28 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
+
 <head>
-  <meta charset="utf-8"/>
-  <title>Ionic App</title>
+    <meta charset="utf-8" />
+    <title>ng-supabase-template</title>
+    <base href="/" />
 
-  <base href="/"/>
+    <meta name="color-scheme" content="light dark" />
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
 
-  <meta name="color-scheme" content="light dark"/>
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="format-detection" content="telephone=no"/>
-  <meta name="msapplication-tap-highlight" content="no"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/icons/favicon.png" />
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png"/>
+    <!-- PWA manifest -->
+    <link rel="manifest" href="/assets/manifest.webmanifest" />
+    <meta name="theme-color" content="#1e293b" />
 
-  <!-- add to homescreen for ios -->
-  <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <link rel="manifest" href="manifest.webmanifest">
+    <!-- iOS support -->
+    <link rel="apple-touch-icon" href="/assets/icons/apple-icon-180.png" />
+    <link rel="icon" type="image/png" href="/assets/icons/manifest-icon-192.maskable.png" />
+
+    <!-- iOS meta tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- ✅ FINANCE FONT - Inter (modern, professional, readable) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&display=swap" rel="stylesheet">
+
+    <link rel="manifest" href="manifest.webmanifest">
 </head>
 
+
+
+<script>
+    // Suppress NavigatorLockAcquireTimeoutError
+    window.addEventListener('unhandledrejection', function(e) {
+        if (e.reason && e.reason.message && e.reason.message.includes('NavigatorLockAcquireTimeoutError')) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ▶ Only run in browser, not in installed PWA
+        if (window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true) {
+            console.log('✅ App is installed - hiding banner');
+            return;
+        }
+
+        // ▶ Don't show if user permanently dismissed (optional)
+        // Remove this block if you want it to always show until installed
+        const permanentlyDismissed = localStorage.getItem('pwaPermanentlyDismissed');
+        if (permanentlyDismissed === 'true') {
+            console.log('🚫 Banner permanently dismissed by user');
+            return;
+        }
+
+        // ▶ Capture the install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('✅ Install prompt captured');
+
+            // Show banner as soon as prompt is available
+            showBanner();
+        });
+
+        // ▶ Also check if already installed (for Safari iOS)
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+
+        const isInStandaloneMode = () => {
+            return ('standalone' in window.navigator) && window.navigator.standalone;
+        };
+
+        // For iOS, show banner immediately if not installed
+        if (isIos() && !isInStandaloneMode()) {
+            // iOS doesn't support beforeinstallprompt, show banner after delay
+            setTimeout(showBanner, 3000);
+        }
+
+        function showBanner() {
+            // Don't show if already installed or banner exists
+            if (window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true ||
+                document.getElementById('pwa-banner')) {
+                return;
+            }
+
+            console.log('📱 Showing PWA installation banner');
+
+            // Create banner
+            const banner = document.createElement('div');
+            banner.id = 'pwa-banner';
+            banner.style.cssText = `
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #1f2937;
+                color: #eef2ff;
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-radius: 16px 16px 0 0;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                z-index: 99999;
+                transform: translateY(0);
+                transition: transform 0.3s ease;
+                animation: slideUp 0.3s ease;
+                border-top: 1px solid #374151;
+            `;
+
+            // Add animation keyframes
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideUp {
+                    from { transform: translateY(100%); }
+                    to { transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // iOS vs Android message
+            const isIOS = isIos();
+            const installText = isIOS ?
+                'Tap Share → Add to Home Screen' :
+                'Install app for quick access';
+
+            banner.innerHTML = `
+                <div style="display:flex;gap:12px;align-items:center;flex:1;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="12" cy="12" r="3" stroke="#3b82f6" stroke-width="1.5"/>
+                    </svg>
+                    <div>
+                        <!-- <div style="font-weight:500;font-size:14px;">Install Church Reports Hub</div> -->
+                        <div style="font-size:12px;opacity:.8;margin-top:2px;">${installText}</div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <button id="pwa-install-btn" style="
+                        background: #3b82f6;
+                        color: white;
+                        border: none;
+                        padding: 8px 20px;
+                        border-radius: 30px;
+                        font-weight: 500;
+                        font-size: 13px;
+                        cursor: pointer;
+                        font-family: inherit;
+                        transition: all 0.2s ease;
+                    ">Install</button>
+
+                    <button id="pwa-dismiss-btn" style="
+                        background: transparent;
+                        border: 1px solid #4b5563;
+                        color: #9ca3af;
+                        padding: 8px 14px;
+                        border-radius: 30px;
+                        font-size: 13px;
+                        cursor: pointer;
+                        font-family: inherit;
+                        transition: all 0.2s ease;
+                    ">Later</button>
+                </div>
+            `;
+
+            document.body.appendChild(banner);
+
+            // Add hover effects
+            const installBtn = document.getElementById('pwa-install-btn');
+            const dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+            if (installBtn) {
+                installBtn.onmouseenter = () => {
+                    installBtn.style.background = '#2563eb';
+                    installBtn.style.transform = 'scale(1.02)';
+                };
+                installBtn.onmouseleave = () => {
+                    installBtn.style.background = '#3b82f6';
+                    installBtn.style.transform = 'scale(1)';
+                };
+            }
+
+            if (dismissBtn) {
+                dismissBtn.onmouseenter = () => {
+                    dismissBtn.style.borderColor = '#6b7280';
+                    dismissBtn.style.color = '#e5e7eb';
+                };
+                dismissBtn.onmouseleave = () => {
+                    dismissBtn.style.borderColor = '#4b5563';
+                    dismissBtn.style.color = '#9ca3af';
+                };
+            }
+
+            // Install button handler
+            document.getElementById('pwa-install-btn').onclick = async() => {
+                if (deferredPrompt) {
+                    // Android - show native install prompt
+                    deferredPrompt.prompt();
+                    const {
+                        outcome
+                    } = await deferredPrompt.userChoice;
+                    console.log(`User response to install: ${outcome}`);
+
+                    if (outcome === 'accepted') {
+                        banner.remove();
+                    }
+
+                    deferredPrompt = null;
+                } else if (isIOS) {
+                    // iOS - show instructions
+                    alert('📱 To install:\n\n1. Tap the Share button (📤) at the bottom\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" in the top right');
+                } else {
+                    // Fallback for other browsers
+                    alert('To install, look for "Add to Home Screen" in your browser menu');
+                }
+            };
+
+            // Dismiss button handler
+            document.getElementById('pwa-dismiss-btn').onclick = () => {
+                // Optional: store permanent dismiss (remove if you want it to always show)
+                // localStorage.setItem('pwaPermanentlyDismissed', 'true');
+
+                banner.style.transform = 'translateY(100%)';
+                setTimeout(() => banner.remove(), 300);
+            };
+
+            // Remove the auto-hide timeout - banner persists!
+            // No setTimeout to remove banner - it stays until installed or dismissed
+        }
+
+        // Also show banner if page loads and not installed (after a delay)
+        setTimeout(() => {
+            if (!window.matchMedia('(display-mode: standalone)').matches &&
+                !window.navigator.standalone &&
+                !document.getElementById('pwa-banner')) {
+                showBanner();
+            }
+        }, 5000);
+
+    })();
+</script>
+
 <body>
-  <app-root></app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
+    <app-root></app-root>
+    <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 
 </html>
