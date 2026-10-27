@@ -26,5 +26,13 @@ export const routes: Routes = [
         (m) => m.SubitizingPage
       ),
   },
+ {
+  path: 'skills/counting',
+  loadComponent: () =>
+    import('./pages/skills/counting/counting/counting.page').then(
+      (m) => m.CountingPage
+    ),
+},
+
 
 ];

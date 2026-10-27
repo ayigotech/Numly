@@ -1,0 +1,407 @@
+ion-content {
+    --background: linear-gradient(135deg, #eaf7ff 0%, #fff5e6 100%);
+}
+
+
+/* ═════════════════════════════════════════════════════════════
+   PHONE-FIRST LAYOUT
+   - generous safe-area padding (parent phone = notch + home bar)
+   - big side margins so a small finger never touches the edge
+   - content vertically distributed, no fixed heights that clip
+   ═════════════════════════════════════════════════════════════ */
+
+.count-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* was space-between — stops answer grid sinking */
+    gap: 14px;
+    min-height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding-top: calc(72px + var(--safe-area-top, 0px));
+    padding-bottom: calc(56px + var(--safe-area-bottom, 0px));
+    /* was 28px — lifts grid up */
+    padding-left: calc(20px + var(--safe-area-left, 0px));
+    padding-right: calc(20px + var(--safe-area-right, 0px));
+    @media (max-width: 500px) {
+        gap: 10px;
+        padding-top: calc(60px + var(--safe-area-top, 0px));
+        padding-bottom: calc(48px + var(--safe-area-bottom, 0px));
+        /* was 24px */
+        padding-left: calc(16px + var(--safe-area-left, 0px));
+        padding-right: calc(16px + var(--safe-area-right, 0px));
+    }
+}
+
+.back-btn {
+    position: absolute;
+    top: calc(16px + var(--safe-area-top, 0px));
+    left: calc(16px + var(--safe-area-left, 0px));
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    z-index: 5;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-height: 44px;
+    /* WCAG touch target */
+}
+
+.prompt-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    text-align: center;
+    min-height: 32px;
+    padding: 0 8px;
+    line-height: 1.3;
+    @media (max-width: 500px) {
+        font-size: 18px;
+    }
+}
+
+
+/* ═════════════════════════════════════════════════════════════
+   BASKET SCENE
+   ═════════════════════════════════════════════════════════════ */
+
+.basket-scene {
+    flex: 1 1 auto;
+    /* takes remaining vertical space */
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+    min-height: 0;
+    margin-bottom: 8px;
+    /* small breathing room above answers */
+}
+
+.basket {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1 / 1;
+    max-height: 44vh;
+    /* was 55vh — ~20% shorter */
+    animation: basket-swipe-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    @media (max-width: 500px) {
+        max-width: 100%;
+        max-height: 40vh;
+        /* shorter still on phones */
+    }
+    @media (max-height: 700px) {
+        max-height: 36vh;
+        /* short screens */
+    }
+}
+
+.basket-rim {
+    position: absolute;
+    top: 6%;
+    left: 2%;
+    right: 2%;
+    height: 11%;
+    background: linear-gradient(180deg, #c98920 0%, #975a16 100%);
+    border-radius: 50% / 60%;
+    box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.18);
+    z-index: 2;
+}
+
+.basket-body {
+    position: absolute;
+    top: 12%;
+    left: 4%;
+    right: 4%;
+    bottom: 6%;
+    background: linear-gradient(180deg, #e2ab3d 0%, #c98920 55%, #975a16 100%);
+    border-radius: 10% 10% 32% 32% / 6% 6% 42% 42%;
+    box-shadow: inset 0 -10px 24px rgba(0, 0, 0, 0.15), inset 0 6px 14px rgba(255, 255, 255, 0.18), 0 12px 28px rgba(151, 90, 22, 0.25);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10% 8% 12%;
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient( 45deg, transparent 0 9px, rgba(0, 0, 0, 0.055) 9px 10px), repeating-linear-gradient(-45deg, transparent 0 9px, rgba(0, 0, 0, 0.055) 9px 10px);
+        pointer-events: none;
+    }
+}
+
+
+/* Grid of items — standard left→right, top→bottom reading order */
+
+.grid {
+    display: grid;
+    gap: clamp(4px, 1.6vw, 14px);
+    width: 100%;
+    height: 100%;
+    align-content: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(24px, 7.5vw, 44px);
+    line-height: 1;
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
+    animation: item-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* ═════════════════════════════════════════════════════════════
+   ANSWER CHOICES
+   ═════════════════════════════════════════════════════════════ */
+
+.answers-area {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-height: 120px;
+    /* was 130px */
+    justify-content: flex-end;
+    flex-shrink: 0;
+    /* never squash the buttons */
+    &.visible {
+        animation: slide-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @media (min-width: 768px) {
+        max-width: 640px;
+        min-height: 150px;
+        gap: 16px;
+    }
+}
+
+.answer-prompt {
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    text-align: center;
+    @media (min-width: 768px) {
+        font-size: 20px;
+    }
+}
+
+.choices {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    @media (max-width: 500px) {
+        gap: 10px;
+    }
+    @media (min-width: 768px) {
+        gap: 20px;
+    }
+}
+
+.choice-btn {
+    aspect-ratio: 1 / 1;
+    min-height: 64px;
+    /* WCAG large touch target */
+    min-width: 64px;
+    border: none;
+    border-radius: 16px;
+    background: #fff;
+    font-size: clamp(24px, 6vw, 40px);
+    font-weight: 800;
+    color: #333;
+    cursor: pointer;
+    touch-action: manipulation;
+    box-shadow: 0 6px 0 #d1d8e0, 0 8px 16px rgba(0, 0, 0, 0.12);
+    transition: transform 0.1s ease, background 0.2s ease, box-shadow 0.1s ease;
+    animation: pop-in-btn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    &:active:not(:disabled) {
+        transform: translateY(3px);
+        box-shadow: 0 3px 0 #d1d8e0;
+    }
+    &:disabled {
+        cursor: not-allowed;
+    }
+    &.correct {
+        background: #d4f4dd;
+        box-shadow: 0 6px 0 #9fd4ae;
+        animation: correct-bounce 0.5s ease-out;
+    }
+    &.wrong {
+        background: #ffe0e0;
+        box-shadow: 0 6px 0 #f0b0b0;
+        animation: shake 0.4s ease-in-out;
+    }
+    @media (max-width: 500px) {
+        border-radius: 14px;
+    }
+    @media (min-width: 768px) {
+        border-radius: 20px;
+    }
+}
+
+
+/* ═════════════════════════════════════════════════════════════
+   FINISHED SCREEN
+   ═════════════════════════════════════════════════════════════ */
+
+.finished {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 24px;
+    .finished-emoji {
+        font-size: 72px;
+        animation: correct-bounce 0.8s ease-out;
+    }
+    h1 {
+        font-size: 30px;
+        color: #2e7d4f;
+        margin: 0;
+    }
+    p {
+        font-size: 16px;
+        color: #666;
+        margin: 0;
+    }
+}
+
+.restart-btn {
+    margin-top: 8px;
+    background: #2b6cb0;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 52px;
+    box-shadow: 0 4px 0 #1a4d80;
+    touch-action: manipulation;
+    &:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #1a4d80;
+    }
+}
+
+
+/* ═════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ═════════════════════════════════════════════════════════════ */
+
+@keyframes basket-swipe-in {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.94);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes item-pop-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.4) translateY(-14px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.18) translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pop-in-btn {
+    0% {
+        opacity: 0;
+        transform: scale(0.6) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes correct-bounce {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-8px);
+    }
+    40% {
+        transform: translateX(8px);
+    }
+    60% {
+        transform: translateX(-6px);
+    }
+    80% {
+        transform: translateX(6px);
+    }
+}
+
+
+/* Respect users who prefer reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+    .basket,
+    .item,
+    .answers-area,
+    .choice-btn {
+        animation: none !important;
+        transition: none !important;
+    }
+}

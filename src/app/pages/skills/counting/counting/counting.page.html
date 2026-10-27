@@ -1,0 +1,41 @@
+<ion-content [fullscreen]="true" [scrollY]="false">
+    <div class="count-container">
+        <button class="back-btn" (click)="goHome()" aria-label="Back">← Back</button> @if (isFinished) {
+        <div class="finished">
+            <div class="finished-emoji">🌟</div>
+            <h1>Amazing!</h1>
+            <p>You counted all the way to 15!</p>
+            <button class="restart-btn" (click)="goHome()">Back to skills</button>
+        </div>
+        } @else {
+
+        <h1 class="prompt-title">
+            @if (!answered) { Count the things in the basket! 🧺 } @else { {{ message }} }
+        </h1>
+
+        <!-- Basket scene -->
+        <div class="basket-scene">
+            <div class="basket">
+                <div class="basket-rim"></div>
+                <div class="basket-body">
+                    <div class="grid" [style.grid-template-columns]="'repeat(' + gridCols + ', 1fr)'">
+                        @for (item of items; track item.id) {
+                        <span class="item" [style.animation-delay.ms]="item.delay">{{ item.emoji }}</span> }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Answer choices -->
+        <div class="answers-area" [class.visible]="showChoices">
+            @if (showChoices) {
+            <p class="answer-prompt">How many things did you count?</p>
+            <div class="choices">
+                @for (choice of choices; track choice; let i = $index) {
+                <button class="choice-btn" [class.correct]="answered && isCorrect && choice === currentValue" [class.wrong]="answered && !isCorrect && choice === pickedValue" [disabled]="answered" [style.animation-delay.ms]="i * 80" (click)="pick(choice)">{{ choice }}</button>                }
+            </div>
+            }
+        </div>
+        }
+    </div>
+</ion-content>
