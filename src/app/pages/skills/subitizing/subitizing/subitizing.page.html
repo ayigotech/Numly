@@ -1,0 +1,40 @@
+<ion-content [fullscreen]="true" [scrollY]="false">
+    <div class="subt-container">
+        <button class="back-btn" (click)="goHome()">← Back</button> @if (!showDots && isReviewRound) {
+        <span class="review-badge">Memory check!</span> } @if (isFinished) {
+        <div class="finished">
+            <h1>Amazing! 🌟</h1>
+            <p>You finished all the numbers today.</p>
+            <button class="restart-btn" (click)="goHome()">Back to skills</button>
+        </div>
+        } @else {
+        <div class="dice-area">
+            @if (showDots) {
+            <svg viewBox="0 0 100 100" class="dice-svg">
+            <rect x="2" y="2" width="96" height="96" rx="12"
+                  fill="#ffffff" stroke="#d1d8e0" stroke-width="3"/>
+            @for (dot of currentDots; track $index) {
+  <circle [attr.cx]="dot.cx" [attr.cy]="dot.cy" r="8" [attr.fill]="dotColor"/>
+}
+          </svg> } @else {
+            <img src="assets/cartoon/guess.png" alt="How many?" class="guess-img" /> }
+        </div>
+
+        @if (!showDots) {
+        <div class="answers-area">
+            <p class="prompt">How many dots did you see?</p>
+
+            <div class="choices">
+                @for (choice of choices; track choice; let i = $index) {
+                <button class="choice-btn" [class.wrong]="answered && !isCorrect && choice === pickedValue" [class.correct]="answered && isCorrect && choice === currentValue" [disabled]="answered" [style.animation-delay.ms]="i * 80" (click)="pick(choice)">
+                {{ choice }}
+              </button> }
+            </div>
+
+            @if (message) {
+            <p class="message" [class.success]="isCorrect">{{ message }}</p>
+            }
+        </div>
+        } }
+    </div>
+</ion-content>

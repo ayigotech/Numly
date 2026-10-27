@@ -1,20 +1,36 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <div class="home-container">
+        <header class="home-header">
+            <div class="header-text">
+                <h1 class="home-title">Hi there!</h1>
+                <p class="home-subtitle">Age {{ age }} skills for you</p>
+            </div>
+            <button class="change-age-btn" (click)="changeAge()">Change age</button>
+        </header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+        @if (loading) {
+        <div class="loading-state">
+            <p>Loading skills...</p>
+        </div>
+        } @else if (skills.length === 0) {
+        <div class="empty-state">
+            <img src="assets/cartoon/oops.png" alt="No skills yet" class="oops-img" />
+            <p>No skills yet for your age. Come back soon!</p>
+        </div>
+        } @else {
+        <div class="skills-grid">
+            @for (skill of skills; track skill.id) {
+            <button class="skill-card" [style.--card-accent]="skill.color" (click)="openSkill(skill)">
+            <div class="skill-image">
+              <img [src]="skill.image" [alt]="skill.title" />
+            </div>
+            <div class="skill-body">
+              <h2 class="skill-title">{{ skill.title }}</h2>
+              <p class="skill-desc">{{ skill.description }}</p>
+              <span class="skill-age">Ages {{ skill.ageMin }}–{{ skill.ageMax }}</span>
+            </div>
+          </button> }
+        </div>
+        }
+    </div>
 </ion-content>

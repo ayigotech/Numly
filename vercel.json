@@ -1,5 +1,5 @@
 {
-    "version": 2,
+    "version": 1,
     "installCommand": "npm install",
     "buildCommand": "npm run build -- --configuration production",
     "outputDirectory": "www",

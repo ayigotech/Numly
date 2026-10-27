@@ -1,0 +1,22 @@
+<ion-content [fullscreen]="true" [scrollY]="false">
+    <button class="skip-btn" (click)="skip()">Skip →</button>
+
+    <div class="splash-container">
+        <div class="cartoon-side">
+            <img src="assets/cartoon/kid.png" alt="Friendly kid counting" class="cartoon-img" />
+        </div>
+
+        <div class="grid-side">
+            <h1 class="splash-title">Let's count to 10!</h1>
+
+            <div class="number-grid">
+                @for (num of numbers; track $index) {
+                <div class="number-card" [class.swapping]="isSwapping($index)" [class.complete]="isSorted" [style.background]="isSorted ? null : cardColors[$index]">
+                    <span class="number-value">{{ num }}</span> @if (isSorted) {
+                    <span class="checkmark">✓</span> }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</ion-content>

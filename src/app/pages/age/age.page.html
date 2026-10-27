@@ -1,0 +1,14 @@
+<ion-content [fullscreen]="true" [scrollY]="false">
+    <div class="age-container">
+        <h1 class="age-title">How old are you?</h1>
+        <p class="age-subtitle">Tap your age to see what you can learn</p>
+
+        <div class="age-grid">
+            @for (age of ages; track age) {
+            <button class="age-card" (click)="pick(age)">
+          <span class="age-number">{{ age }}</span>
+          <span class="age-label">years</span>
+        </button> }
+        </div>
+    </div>
+</ion-content>

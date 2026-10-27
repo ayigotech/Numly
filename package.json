@@ -43,6 +43,7 @@
     "@angular/language-service": "22.2.3",
     "@capacitor/cli": "8.5.3",
     "@ionic/angular-toolkit": "^13.0.0",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/howler": "^2.2.13",
     "angular-eslint": "22.6.0",
     "eslint": "^10.10.0",

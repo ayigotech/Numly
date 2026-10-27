@@ -1,0 +1,23 @@
+{
+    "skills": [{
+            "id": "subitizing",
+            "title": "Subitizing",
+            "description": "Instantly see how many without counting.",
+            "ageMin": 4,
+            "ageMax": 5,
+            "image": "assets/skills/subitizing.jpg",
+            "color": "#7bd389",
+            "route": "/skills/subitizing"
+        },
+        {
+            "id": "counting",
+            "title": "Counting",
+            "description": "Count objects and match them to numbers.",
+            "ageMin": 4,
+            "ageMax": 5,
+            "image": "assets/skills/counting.jpg",
+            "color": "#4ea8de",
+            "route": "/skills/counting"
+        }
+    ]
+}
