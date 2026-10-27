@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import confetti from 'canvas-confetti';
-import { Howl } from 'howler';
+import { AudioService } from '../../core/services/audio.service';
 
 @Component({
   selector: 'app-splash',
@@ -14,6 +14,7 @@ import { Howl } from 'howler';
 export class SplashPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private audio = inject(AudioService);
 
   numbers: number[] = [];
   swappingIndices: number[] = [];
@@ -25,17 +26,18 @@ export class SplashPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.numbers = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     this.cardColors = this.numbers.map(() => '#ffffff');
-    console.log('Shuffled:', this.numbers);
     this.runSortAnimation();
   }
 
   ngOnDestroy() {
     this.timers.forEach((t) => clearTimeout(t));
+    this.audio.stopBackground(150);
   }
 
   skip() {
     this.timers.forEach((t) => clearTimeout(t));
-    this.router.navigateByUrl('/age', { replaceUrl: true });
+    this.audio.stopBackground(150);
+    this.goAfterSplash();
   }
 
   isSwapping(index: number): boolean {
@@ -54,85 +56,93 @@ export class SplashPage implements OnInit, OnDestroy {
     return copy;
   }
 
-
-
   private runSortAnimation() {
-  const arr = [...this.numbers];
-  const n = arr.length;
+    // Start audio on first mount.
+    // Splash is auto-play, so this may be blocked by the browser until the
+    // first user gesture. If silent, the next tap anywhere will unlock it.
+    this.audio.playBackground(
+      'splash-counting',
+      'assets/audio/splash-counting.mp3',
+      0.6
+    );
 
-  type SwapStep = { a: number; b: number };
-  const steps: SwapStep[] = [];
+    // Fallback: unlock audio on first interaction anywhere on the page
+    const unlock = () => {
+      this.audio.playBackground(
+        'splash-counting',
+        'assets/audio/splash-counting.mp3',
+        0.6
+      );
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('touchstart', unlock);
+    };
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('touchstart', unlock, { once: true });
 
-  const temp = [...arr];
-  for (let i = 0; i < n - 1; i++) {
-    for (let j = 0; j < n - i - 1; j++) {
-      if (temp[j] > temp[j + 1]) {
-        steps.push({ a: j, b: j + 1 });
-        [temp[j], temp[j + 1]] = [temp[j + 1], temp[j]];
+    const arr = [...this.numbers];
+    const n = arr.length;
+
+    type SwapStep = { a: number; b: number };
+    const steps: SwapStep[] = [];
+
+    const temp = [...arr];
+    for (let i = 0; i < n - 1; i++) {
+      for (let j = 0; j < n - i - 1; j++) {
+        if (temp[j] > temp[j + 1]) {
+          steps.push({ a: j, b: j + 1 });
+          [temp[j], temp[j + 1]] = [temp[j + 1], temp[j]];
+        }
       }
     }
+
+    const stepDelay = 700;
+    let delay = 1000;
+
+    const palette = ['#ffd166', '#ef476f', '#06d6a0', '#118ab2', '#8338ec', '#ff9f1c'];
+
+    steps.forEach((step) => {
+      this.timers.push(
+        setTimeout(() => {
+          this.swappingIndices = [step.a, step.b];
+
+          const colorCopy = [...this.cardColors];
+          colorCopy[step.a] = palette[Math.floor(Math.random() * palette.length)];
+          colorCopy[step.b] = palette[Math.floor(Math.random() * palette.length)];
+          this.cardColors = colorCopy;
+
+          this.cdr.markForCheck();
+        }, delay)
+      );
+
+      this.timers.push(
+        setTimeout(() => {
+          const copy = [...this.numbers];
+          [copy[step.a], copy[step.b]] = [copy[step.b], copy[step.a]];
+          this.numbers = copy;
+
+          const colorCopy = [...this.cardColors];
+          colorCopy[step.a] = '#ffffff';
+          colorCopy[step.b] = '#ffffff';
+          this.cardColors = colorCopy;
+
+          this.swappingIndices = [];
+          this.cdr.markForCheck();
+        }, delay + 350)
+      );
+
+      delay += stepDelay;
+    });
+
+    this.timers.push(
+      setTimeout(() => {
+        this.isSorted = true;
+        this.fireConfetti();
+        this.cdr.markForCheck();
+      }, delay + 400)
+    );
+
+    this.timers.push(setTimeout(() => this.goAfterSplash(), delay + 3000));
   }
-
-  const stepDelay = 700;
-  let delay = 1000;
-
-  const palette = ['#ffd166', '#ef476f', '#06d6a0', '#118ab2', '#8338ec', '#ff9f1c'];
-
-  steps.forEach((step) => {
-    // Highlight + random colors
-    this.timers.push(
-      setTimeout(() => {
-        this.swappingIndices = [step.a, step.b];
-
-        const colorCopy = [...this.cardColors];
-        colorCopy[step.a] = palette[Math.floor(Math.random() * palette.length)];
-        colorCopy[step.b] = palette[Math.floor(Math.random() * palette.length)];
-        this.cardColors = colorCopy;
-
-        // Play the lower number in the pair
-    const smaller = Math.min(this.numbers[step.a], this.numbers[step.b]);
-    this.playNumber(smaller);
-
-        this.cdr.markForCheck();
-      }, delay)
-    );
-
-    // Swap + reset colors
-    this.timers.push(
-      setTimeout(() => {
-        const copy = [...this.numbers];
-        [copy[step.a], copy[step.b]] = [copy[step.b], copy[step.a]];
-        this.numbers = copy;
-
-        const colorCopy = [...this.cardColors];
-        colorCopy[step.a] = '#ffffff';
-        colorCopy[step.b] = '#ffffff';
-        this.cardColors = colorCopy;
-
-        this.swappingIndices = [];
-        this.cdr.markForCheck();
-      }, delay + 350)
-    );
-
-    delay += stepDelay;
-  });
-
-  // Complete
-  this.timers.push(
-    setTimeout(() => {
-      this.isSorted = true;
-      this.fireConfetti();
-      this.speakPraise();   
-      this.cdr.markForCheck();
-    }, delay + 400)
-  );
-
-  // Navigate
-  this.timers.push(
-    setTimeout(() => this.router.navigateByUrl('/age', { replaceUrl: true }), delay + 3000)
-  );
-}
-
 
   private fireConfetti() {
     confetti({
@@ -143,23 +153,12 @@ export class SplashPage implements OnInit, OnDestroy {
     });
   }
 
-
-  private playNumber(n: number) {
-  const sound = new Howl({
-    src: [`assets/audio/${n}.mp3`],
-    volume: 0.8,
-    onloaderror: () => {
-      // Silently skip if file doesn't exist yet
-    },
-  });
-  sound.play();
-}
-
-private speakPraise() {
-  if (!('speechSynthesis' in window)) return;
-  const utter = new SpeechSynthesisUtterance('Well done!');
-  utter.rate = 0.9;
-  utter.pitch = 1.2;
-  window.speechSynthesis.speak(utter);
-}
+  private goAfterSplash() {
+    const age = localStorage.getItem('numly:age');
+    if (age === null) {
+      this.router.navigateByUrl('/age', { replaceUrl: true });
+    } else {
+      this.router.navigateByUrl('/home', { replaceUrl: true });
+    }
+  }
 }

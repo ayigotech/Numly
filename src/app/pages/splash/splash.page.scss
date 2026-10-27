@@ -4,8 +4,8 @@ ion-content {
 
 .skip-btn {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: calc(16px + var(--safe-area-top));
+    right: calc(16px + var(--safe-area-right));
     z-index: 10;
     background: rgba(255, 255, 255, 0.7);
     border: none;
@@ -26,7 +26,7 @@ ion-content {
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 24px;
+    padding: calc(24px + var(--safe-area-top)) calc(24px + var(--safe-area-right)) calc(24px + var(--safe-area-bottom)) calc(24px + var(--safe-area-left));
     gap: 40px;
     box-sizing: border-box;
     overflow: hidden;
@@ -34,7 +34,7 @@ ion-content {
         flex-direction: column;
         justify-content: space-evenly;
         gap: 8px;
-        padding: 17px;
+        padding: calc(8px + var(--safe-area-top)) 8px calc(8px + var(--safe-area-bottom)) 8px;
         height: 100%;
     }
 }

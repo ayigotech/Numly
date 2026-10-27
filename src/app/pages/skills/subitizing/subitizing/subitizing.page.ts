@@ -48,23 +48,23 @@ export class SubitizingPage implements OnInit, OnDestroy {
       [{ cx: 25, cy: 30 }, { cx: 50, cy: 30 }, { cx: 75, cy: 30 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }, { cx: 75, cy: 70 }],
       [{ cx: 25, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 50 }, { cx: 75, cy: 50 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }],
     ],
-    7: [
-      [{ cx: 30, cy: 20 }, { cx: 70, cy: 20 }, { cx: 30, cy: 42 }, { cx: 70, cy: 42 }, { cx: 30, cy: 64 }, { cx: 70, cy: 64 }, { cx: 50, cy: 84 }],
-      [{ cx: 50, cy: 20 }, { cx: 25, cy: 40 }, { cx: 75, cy: 40 }, { cx: 25, cy: 60 }, { cx: 75, cy: 60 }, { cx: 25, cy: 80 }, { cx: 75, cy: 80 }],
-      [{ cx: 25, cy: 25 }, { cx: 50, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 50 }, { cx: 75, cy: 50 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }],
-    ],
-    8: [
-      [{ cx: 25, cy: 20 }, { cx: 50, cy: 20 }, { cx: 75, cy: 20 }, { cx: 25, cy: 45 }, { cx: 75, cy: 45 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }, { cx: 75, cy: 70 }],
-      [{ cx: 25, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 42 }, { cx: 75, cy: 42 }, { cx: 25, cy: 58 }, { cx: 75, cy: 58 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }],
-      [{ cx: 25, cy: 30 }, { cx: 50, cy: 30 }, { cx: 75, cy: 30 }, { cx: 25, cy: 50 }, { cx: 50, cy: 50 }, { cx: 75, cy: 50 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }],
-    ],
-    9: [
-      [{ cx: 25, cy: 20 }, { cx: 50, cy: 20 }, { cx: 75, cy: 20 }, { cx: 25, cy: 45 }, { cx: 50, cy: 45 }, { cx: 75, cy: 45 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }, { cx: 75, cy: 70 }],
-      [{ cx: 20, cy: 20 }, { cx: 50, cy: 20 }, { cx: 80, cy: 20 }, { cx: 20, cy: 50 }, { cx: 50, cy: 50 }, { cx: 80, cy: 50 }, { cx: 20, cy: 80 }, { cx: 50, cy: 80 }, { cx: 80, cy: 80 }],
-    ],
+    // 7: [
+    //   [{ cx: 30, cy: 20 }, { cx: 70, cy: 20 }, { cx: 30, cy: 42 }, { cx: 70, cy: 42 }, { cx: 30, cy: 64 }, { cx: 70, cy: 64 }, { cx: 50, cy: 84 }],
+    //   [{ cx: 50, cy: 20 }, { cx: 25, cy: 40 }, { cx: 75, cy: 40 }, { cx: 25, cy: 60 }, { cx: 75, cy: 60 }, { cx: 25, cy: 80 }, { cx: 75, cy: 80 }],
+    //   [{ cx: 25, cy: 25 }, { cx: 50, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 50 }, { cx: 75, cy: 50 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }],
+    // ],
+    // 8: [
+    //   [{ cx: 25, cy: 20 }, { cx: 50, cy: 20 }, { cx: 75, cy: 20 }, { cx: 25, cy: 45 }, { cx: 75, cy: 45 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }, { cx: 75, cy: 70 }],
+    //   [{ cx: 25, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 42 }, { cx: 75, cy: 42 }, { cx: 25, cy: 58 }, { cx: 75, cy: 58 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }],
+    //   [{ cx: 25, cy: 30 }, { cx: 50, cy: 30 }, { cx: 75, cy: 30 }, { cx: 25, cy: 50 }, { cx: 50, cy: 50 }, { cx: 75, cy: 50 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }],
+    // ],
+    // 9: [
+    //   [{ cx: 25, cy: 20 }, { cx: 50, cy: 20 }, { cx: 75, cy: 20 }, { cx: 25, cy: 45 }, { cx: 50, cy: 45 }, { cx: 75, cy: 45 }, { cx: 25, cy: 70 }, { cx: 50, cy: 70 }, { cx: 75, cy: 70 }],
+    //   [{ cx: 20, cy: 20 }, { cx: 50, cy: 20 }, { cx: 80, cy: 20 }, { cx: 20, cy: 50 }, { cx: 50, cy: 50 }, { cx: 80, cy: 50 }, { cx: 20, cy: 80 }, { cx: 50, cy: 80 }, { cx: 80, cy: 80 }],
+    // ],
   };
 
-  currentValue = 4;
+  currentValue = 3;
   currentDots: DiceDot[] = [];
   choices: number[] = [];
 
@@ -77,7 +77,7 @@ export class SubitizingPage implements OnInit, OnDestroy {
   pickedValue: number | null = null;
 
   // Adaptive state
-  private learningTarget = 4;
+  private learningTarget = 3;
   private variantIndex = 0;
   private learningRoundCount = 0;
   private passedNumbers: number[] = [];

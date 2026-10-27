@@ -56,7 +56,7 @@ export class AudioService implements OnDestroy {
 
   // ---------- One-shot sound effects ----------
 
-  play(src: string, volume = 0.6) {
+  play(src: string, volume = 0.9) {
     if (this.muted) return;
 
     let sound = this.cache.get(src);

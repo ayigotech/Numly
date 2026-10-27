@@ -21,4 +21,8 @@ export class AgePage {
     this.ageService.setAge(age);
     this.router.navigateByUrl('/home', { replaceUrl: true });
   }
+
+  backToSplash() {
+  this.router.navigateByUrl('/splash', { replaceUrl: true });
+}
 }
